@@ -76,9 +76,10 @@
                         android:textSize="16sp"/>
 
                     <TextView
+                        android:id="@+id/textSuhu"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="30 C"
+                        android:text="0 C"
                         android:textColor="@color/colorWhite"
                         android:textSize="42sp"/>
 
@@ -105,9 +106,10 @@
                         android:textSize="16sp"/>
 
                     <TextView
+                        android:id="@+id/textKelembaban"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="62.9 %"
+                        android:text="0 %"
                         android:textColor="@color/colorWhite"
                         android:textSize="42sp"/>
 
