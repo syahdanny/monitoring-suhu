@@ -1,124 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:id="@+id/refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
-    tools:context=".MainActivity">
-
-    <ImageView
-        android:id="@+id/avatar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/bawang"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/greetings"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-
-    <TextView
-        android:id="@+id/greetings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="20dp"
-        android:text="Selamat Datang!"
-        android:textSize="20sp"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintTop_toBottomOf="@id/avatar"
-        app:layout_constraintBottom_toTopOf="@id/scrollView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-
-    <ScrollView
-        android:id="@+id/scrollView"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/shape_rounded_white"
-        app:layout_constraintTop_toBottomOf="@id/greetings"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
+        tools:context=".MainActivity">
 
-        <LinearLayout
-            android:id="@+id/main"
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/bawang"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/greetings"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <TextView
+            android:id="@+id/greetings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="20dp"
+            android:text="Selamat Datang!"
+            android:textSize="20sp"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintTop_toBottomOf="@id/avatar"
+            app:layout_constraintBottom_toTopOf="@id/scrollView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:orientation="vertical">
+            android:background="@drawable/shape_rounded_white"
+            app:layout_constraintTop_toBottomOf="@id/greetings"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
 
             <LinearLayout
-                android:id="@+id/suhuKelembaban"
+                android:id="@+id/main"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="2"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="0dp"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/forSuhu"
+                    android:id="@+id/suhuKelembaban"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginLeft="8dp"
-                    android:padding="16dp"
-                    android:background="@drawable/shape_rounded_blue"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:weightSum="2"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/forSuhu"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Suhu"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="16sp"/>
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_marginLeft="8dp"
+                        android:padding="16dp"
+                        android:background="@drawable/shape_rounded_blue"
+                        android:orientation="vertical"
+                        android:layout_weight="1">
 
-                    <TextView
-                        android:id="@+id/textSuhu"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Suhu"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="16sp"/>
+
+                        <TextView
+                            android:id="@+id/textSuhu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 C"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="42sp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/forKelembaban"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="0 C"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="42sp"/>
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginLeft="4dp"
+                        android:padding="16dp"
+                        android:background="@drawable/shape_rounded_blue"
+                        android:orientation="vertical"
+                        android:layout_weight="1">
 
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Kelembaban"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="16sp"/>
 
-                <LinearLayout
-                    android:id="@+id/forKelembaban"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginLeft="4dp"
-                    android:padding="16dp"
-                    android:background="@drawable/shape_rounded_blue"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/textKelembaban"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 %"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="42sp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Kelembaban"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="16sp"/>
-
-                    <TextView
-                        android:id="@+id/textKelembaban"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0 %"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="42sp"/>
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
