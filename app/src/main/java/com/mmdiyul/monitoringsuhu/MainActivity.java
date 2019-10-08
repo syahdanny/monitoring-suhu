@@ -7,6 +7,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.ViewTreeObserver;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private String kelembaban;
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         textSuhu = findViewById(R.id.textSuhu);
         textKelembaban = findViewById(R.id.textKelembaban);
         swipeRefreshLayout = findViewById(R.id.refresh);
+        scrollView = findViewById(R.id.scrollView);
 
         // ucapan selamat berdasarkan waktu.
         int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -90,6 +94,18 @@ public class MainActivity extends AppCompatActivity {
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, 1500);
+            }
+        });
+
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int scrollY = scrollView.getScrollY();
+                if (scrollY == 0) {
+                    swipeRefreshLayout.setEnabled(true);
+                } else {
+                    swipeRefreshLayout.setEnabled(false);
+                }
             }
         });
     }
