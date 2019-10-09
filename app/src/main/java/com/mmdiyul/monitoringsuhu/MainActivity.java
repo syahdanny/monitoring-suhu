@@ -25,11 +25,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView greetings;
     private TextView textSuhu;
     private TextView textKelembaban;
+    private TextView textUpdate;
 
     private DatabaseReference databaseReference;
 
     private String suhu;
     private String kelembaban;
+    private String update;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ScrollView scrollView;
@@ -43,8 +45,10 @@ public class MainActivity extends AppCompatActivity {
         greetings = findViewById(R.id.greetings);
         textSuhu = findViewById(R.id.textSuhu);
         textKelembaban = findViewById(R.id.textKelembaban);
+        textUpdate = findViewById(R.id.textUpdate);
         swipeRefreshLayout = findViewById(R.id.refresh);
         scrollView = findViewById(R.id.scrollView);
+
 
         // ucapan selamat berdasarkan waktu.
         int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -69,9 +73,11 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     suhu = dataSnapshot.child(lastChild + "/suhu").getValue().toString();
                     kelembaban = dataSnapshot.child(lastChild + "/kelembaban").getValue().toString();
+                    update = dataSnapshot.child(lastChild + "/updatedAt").getValue().toString();
 
                     textSuhu.setText(suhu + " C");
                     textKelembaban.setText(kelembaban + " %");
+                    textUpdate.setText("Last update : " +update);
                 } catch (NullPointerException nullPointer) {
                     Log.d("Error: ", nullPointer.getMessage());
                 }
