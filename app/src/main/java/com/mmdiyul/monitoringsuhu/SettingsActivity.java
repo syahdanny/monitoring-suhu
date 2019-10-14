@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,5 +68,33 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void handleSimpan(View view) {
+        if (tigaPuluhMenit.isChecked()) {
+            period = 1800000;
+        } else if (satuJam.isChecked()) {
+            period = 3600000;
+        } else if (duaJam.isChecked()) {
+            period = 7200000;
+        } else if (enamJam.isChecked()) {
+            period = 21600000;
+        } else if (duaBelasJam.isChecked()) {
+            period = 43200000;
+        }
+
+        DatabaseReference settings = databaseReference.child("settings").child("period");
+        settings.setValue(period);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }, 1000);
+
+        Toast.makeText(this, "Pengaturan tersimpan!", Toast.LENGTH_SHORT).show();
     }
 }
