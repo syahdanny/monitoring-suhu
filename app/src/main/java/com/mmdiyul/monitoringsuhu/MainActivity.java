@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.refresh);
         scrollView = findViewById(R.id.scrollView);
 
-
         // ucapan selamat berdasarkan waktu.
         int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (currentHour < 10) {
@@ -64,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Database
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        // last data
         Query lastData = databaseReference.child("sensor");
         lastData.addValueEventListener(new ValueEventListener() {
             @Override
@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // refresh
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // scrollview
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
