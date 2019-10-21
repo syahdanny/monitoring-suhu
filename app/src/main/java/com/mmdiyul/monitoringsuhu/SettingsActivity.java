@@ -25,7 +25,7 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText textMinSuhu, textMaxSuhu, textMinKelembaban, textMaxKelembaban;
 
     private long period;
-    private String minSuhu, maxSuhu, minKelembaban, maxKelembaban;
+    private double minSuhu, maxSuhu, minKelembaban, maxKelembaban;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +47,10 @@ public class SettingsActivity extends AppCompatActivity {
         setting.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                minSuhu = dataSnapshot.child("minSuhu").getValue().toString();
-                maxSuhu = dataSnapshot.child("maxSuhu").getValue().toString();
-                minKelembaban = dataSnapshot.child("minKelembaban").getValue().toString();
-                maxKelembaban = dataSnapshot.child("maxKelembaban").getValue().toString();
+                minSuhu = Double.parseDouble(dataSnapshot.child("minSuhu").getValue().toString());
+                maxSuhu = Double.parseDouble(dataSnapshot.child("maxSuhu").getValue().toString());
+                minKelembaban = Double.parseDouble(dataSnapshot.child("minKelembaban").getValue().toString());
+                maxKelembaban = Double.parseDouble(dataSnapshot.child("maxKelembaban").getValue().toString());
 
                 period = Long.parseLong(dataSnapshot.child("period").getValue().toString());
 
@@ -66,10 +66,10 @@ public class SettingsActivity extends AppCompatActivity {
                     duaBelasJam.setChecked(true);
                 }
 
-                textMinSuhu.setText(minSuhu);
-                textMaxSuhu.setText(maxSuhu);
-                textMinKelembaban.setText(minKelembaban);
-                textMaxKelembaban.setText(maxKelembaban);
+                textMinSuhu.setText(String.valueOf(minSuhu));
+                textMaxSuhu.setText(String.valueOf(maxSuhu));
+                textMinKelembaban.setText(String.valueOf(minKelembaban));
+                textMaxKelembaban.setText(String.valueOf(maxKelembaban));
             }
 
             @Override
@@ -103,17 +103,23 @@ public class SettingsActivity extends AppCompatActivity {
         DatabaseReference settings = databaseReference.child("settings").child("period");
         settings.setValue(period);
 
+        // suhu dan kelembaban
+        minSuhu = Double.parseDouble(textMinSuhu.getText().toString());
+        maxSuhu = Double.parseDouble(textMaxSuhu.getText().toString());
+        minKelembaban = Double.parseDouble(textMinKelembaban.getText().toString());
+        maxKelembaban = Double.parseDouble(textMaxKelembaban.getText().toString());
+
         DatabaseReference dbMinSuhu = databaseReference.child("settings").child("minSuhu");
-        dbMinSuhu.setValue(Double.parseDouble(minSuhu));
+        dbMinSuhu.setValue(minSuhu);
 
         DatabaseReference dbMaxSuhu = databaseReference.child("settings").child("maxSuhu");
-        dbMaxSuhu.setValue(Double.parseDouble(maxSuhu));
+        dbMaxSuhu.setValue(maxSuhu);
 
         DatabaseReference dbMinKelembaban = databaseReference.child("settings").child("minKelembaban");
-        dbMinKelembaban.setValue(Double.parseDouble(minKelembaban));
+        dbMinKelembaban.setValue(minKelembaban);
 
         DatabaseReference dbMaxKelembaban = databaseReference.child("settings").child("maxKelembaban");
-        dbMaxKelembaban.setValue(Double.parseDouble(maxKelembaban));
+        dbMaxKelembaban.setValue(maxKelembaban);
 
         new Handler().postDelayed(new Runnable() {
             @Override
