@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -21,8 +22,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
     private RadioButton tigaPuluhMenit, satuJam, duaJam, enamJam, duaBelasJam;
+    private EditText textMinSuhu, textMaxSuhu, textMinKelembaban, textMaxKelembaban;
 
     private long period;
+    private String minSuhu, maxSuhu, minKelembaban, maxKelembaban;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +37,21 @@ public class SettingsActivity extends AppCompatActivity {
         duaJam = findViewById(R.id.duaJam);
         enamJam = findViewById(R.id.enamJam);
         duaBelasJam = findViewById(R.id.duaBelasJam);
+        textMinSuhu = findViewById(R.id.minSuhu);
+        textMaxSuhu = findViewById(R.id.maxSuhu);
+        textMinKelembaban = findViewById(R.id.minKelembaban);
+        textMaxKelembaban = findViewById(R.id.maxKelembaban);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         Query setting = databaseReference.child("settings");
         setting.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                minSuhu = dataSnapshot.child("minSuhu").getValue().toString();
+                maxSuhu = dataSnapshot.child("maxSuhu").getValue().toString();
+                minKelembaban = dataSnapshot.child("minKelembaban").getValue().toString();
+                maxKelembaban = dataSnapshot.child("maxKelembaban").getValue().toString();
+
                 period = Long.parseLong(dataSnapshot.child("period").getValue().toString());
 
                 if (period == 1800000) {
@@ -53,6 +65,11 @@ public class SettingsActivity extends AppCompatActivity {
                 } else if (period == 43200000) {
                     duaBelasJam.setChecked(true);
                 }
+
+                textMinSuhu.setText(minSuhu);
+                textMaxSuhu.setText(maxSuhu);
+                textMinKelembaban.setText(minKelembaban);
+                textMaxKelembaban.setText(maxKelembaban);
             }
 
             @Override
@@ -85,6 +102,18 @@ public class SettingsActivity extends AppCompatActivity {
 
         DatabaseReference settings = databaseReference.child("settings").child("period");
         settings.setValue(period);
+
+        DatabaseReference dbMinSuhu = databaseReference.child("settings").child("minSuhu");
+        dbMinSuhu.setValue(Double.parseDouble(minSuhu));
+
+        DatabaseReference dbMaxSuhu = databaseReference.child("settings").child("maxSuhu");
+        dbMaxSuhu.setValue(Double.parseDouble(maxSuhu));
+
+        DatabaseReference dbMinKelembaban = databaseReference.child("settings").child("minKelembaban");
+        dbMinKelembaban.setValue(Double.parseDouble(minKelembaban));
+
+        DatabaseReference dbMaxKelembaban = databaseReference.child("settings").child("maxKelembaban");
+        dbMaxKelembaban.setValue(Double.parseDouble(maxKelembaban));
 
         new Handler().postDelayed(new Runnable() {
             @Override
