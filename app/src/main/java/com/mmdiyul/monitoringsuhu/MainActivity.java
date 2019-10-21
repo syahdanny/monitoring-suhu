@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -28,12 +29,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView textSuhu;
     private TextView textKelembaban;
     private TextView textUpdate;
+    private TextView textAlert;
+    private LinearLayout layoutAlert;
 
     private DatabaseReference databaseReference;
 
-    private String suhu;
-    private String kelembaban;
+    private double suhu;
+    private double kelembaban;
     private String update;
+    private double minSuhu, maxSuhu, minKelembaban, maxKelembaban;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ScrollView scrollView;
@@ -48,8 +52,10 @@ public class MainActivity extends AppCompatActivity {
         textSuhu = findViewById(R.id.textSuhu);
         textKelembaban = findViewById(R.id.textKelembaban);
         textUpdate = findViewById(R.id.textUpdate);
+        textAlert = findViewById(R.id.textAlert);
         swipeRefreshLayout = findViewById(R.id.refresh);
         scrollView = findViewById(R.id.scrollView);
+        layoutAlert = findViewById(R.id.forAlert);
 
         // ucapan selamat berdasarkan waktu.
         int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -73,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 long lengthData = dataSnapshot.getChildrenCount();
                 long lastChild = lengthData - 1;
                 try {
-                    suhu = dataSnapshot.child(lastChild + "/suhu").getValue().toString();
-                    kelembaban = dataSnapshot.child(lastChild + "/kelembaban").getValue().toString();
+                    suhu = Double.parseDouble(dataSnapshot.child(lastChild + "/suhu").getValue().toString());
+                    kelembaban = Double.parseDouble(dataSnapshot.child(lastChild + "/kelembaban").getValue().toString());
                     update = dataSnapshot.child(lastChild + "/updatedAt").getValue().toString();
 
                     textSuhu.setText(suhu + " C");
@@ -83,6 +89,48 @@ public class MainActivity extends AppCompatActivity {
                 } catch (NullPointerException nullPointer) {
                     Log.d("Error: ", nullPointer.getMessage());
                 }
+
+                DatabaseReference settings = FirebaseDatabase.getInstance().getReference().child("settings");
+                settings.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        minSuhu = Double.parseDouble(dataSnapshot.child("minSuhu").getValue().toString());
+                        maxSuhu = Double.parseDouble(dataSnapshot.child("maxSuhu").getValue().toString());
+                        minKelembaban = Double.parseDouble(dataSnapshot.child("minKelembaban").getValue().toString());
+                        maxKelembaban = Double.parseDouble(dataSnapshot.child("maxKelembaban").getValue().toString());
+
+                        if (suhu < minSuhu) {
+                            layoutAlert.setVisibility(LinearLayout.VISIBLE);
+                            textAlert.setText("Suhu kurang dari batas minimum!");
+                            if (kelembaban < minKelembaban) {
+                                textAlert.setText("Suhu dan kelembaban kurang dari batas minimum!");
+                            } else if (kelembaban > maxKelembaban) {
+                                textAlert.setText("Suhu kurang dari batas minimum dan kelembaban lebih dari batas maksimum!");
+                            }
+                        } else if (suhu > maxSuhu) {
+                            layoutAlert.setVisibility(LinearLayout.VISIBLE);
+                            textAlert.setText("Suhu lebih dari batas maksimum!");
+                            if (kelembaban < minKelembaban) {
+                                textAlert.setText("Suhu lebih dari batas maksimum dan kelembaban kurang dari batas minimum!");
+                            } else if (kelembaban > maxKelembaban) {
+                                textAlert.setText("Suhu dan kelembaban lebih dari batas maksimum!");
+                            }
+                        } else if (kelembaban < minKelembaban) {
+                            layoutAlert.setVisibility(LinearLayout.VISIBLE);
+                            textAlert.setText("Kelembaban kurang dari batas minimum!");
+                        } else if (kelembaban > maxKelembaban) {
+                            layoutAlert.setVisibility(LinearLayout.VISIBLE);
+                            textAlert.setText("Kelembaban lebih dari batas maksimum!");
+                        } else {
+                            layoutAlert.setVisibility(LinearLayout.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
