@@ -2,6 +2,10 @@ package com.mmdiyul.monitoringsuhu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
@@ -20,8 +24,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.mmdiyul.monitoringsuhu.adapter.SensorAdapter;
+import com.mmdiyul.monitoringsuhu.model.Sensor;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
 
+    private int id;
     private double suhu;
     private double kelembaban;
     private String update;
@@ -41,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private ScrollView scrollView;
+    private RecyclerView recyclerView;
+
+    private List<Sensor> sensorList = new ArrayList<>();
+    private SensorAdapter sensorAdapter;
+
+    int index = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +103,21 @@ public class MainActivity extends AppCompatActivity {
                     textUpdate.setText("Last update : " +update);
                 } catch (NullPointerException nullPointer) {
                     Log.d("Error: ", nullPointer.getMessage());
+                }
+
+                while (index != 10) {
+                    try {
+                        id = Integer.parseInt(dataSnapshot.child(lastChild + "/id").getValue().toString());
+                        suhu = Double.parseDouble(dataSnapshot.child(lastChild + "/suhu").getValue().toString());
+                        kelembaban = Double.parseDouble(dataSnapshot.child(lastChild + "/kelembaban").getValue().toString());
+                        update = dataSnapshot.child(lastChild + "/updatedAt").getValue().toString();
+
+                        sensorList.add(new Sensor(id, kelembaban, suhu, update));
+                        index++;
+//                        lastChild--;
+                    } catch (NullPointerException nullPointer) {
+                        Log.d("Error: ", nullPointer.getMessage());
+                    }
                 }
 
                 DatabaseReference settings = FirebaseDatabase.getInstance().getReference().child("settings");
@@ -166,6 +196,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // set recycler
+        this.recyclerView = findViewById(R.id.recyclerView);
+        sensorAdapter = new SensorAdapter(sensorList, this);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
+        itemDecoration.setDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.line));
+        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(sensorAdapter);
     }
 
     public void handleSettings(View view) {

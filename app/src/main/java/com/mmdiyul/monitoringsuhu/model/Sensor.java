@@ -1,37 +1,31 @@
 package com.mmdiyul.monitoringsuhu.model;
 
 public class Sensor {
-    private float kelembaban;
-    private float suhu;
+    private int id;
+    private double kelembaban;
+    private double suhu;
     private String update;
 
-    public Sensor(float kelembaban, float suhu, String update) {
+    public Sensor(int id, double kelembaban, double suhu, String update) {
+        this.id = id;
         this.kelembaban = kelembaban;
         this.suhu = suhu;
         this.update = update;
     }
 
-    public float getKelembaban() {
+    public int getId() {
+        return id;
+    }
+
+    public double getKelembaban() {
         return kelembaban;
     }
 
-    public void setKelembaban(float kelembaban) {
-        this.kelembaban = kelembaban;
-    }
-
-    public float getSuhu() {
+    public double getSuhu() {
         return suhu;
-    }
-
-    public void setSuhu(float suhu) {
-        this.suhu = suhu;
     }
 
     public String getUpdate() {
         return update;
-    }
-
-    public void setUpdate(String update) {
-        this.update = update;
     }
 }
