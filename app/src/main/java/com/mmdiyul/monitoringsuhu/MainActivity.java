@@ -1,13 +1,5 @@
 package com.mmdiyul.monitoringsuhu;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +9,14 @@ import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Sensor> sensorList = new ArrayList<>();
     private SensorAdapter sensorAdapter;
 
-    int index = 1;
+    int index = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.refresh);
         scrollView = findViewById(R.id.scrollView);
         layoutAlert = findViewById(R.id.forAlert);
+        recyclerView = findViewById(R.id.recyclerView);
 
         // ucapan selamat berdasarkan waktu.
         int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -112,13 +113,14 @@ public class MainActivity extends AppCompatActivity {
                         kelembaban = Double.parseDouble(dataSnapshot.child(lastChild + "/kelembaban").getValue().toString());
                         update = dataSnapshot.child(lastChild + "/updatedAt").getValue().toString();
 
-                        sensorList.add(new Sensor(id, kelembaban, suhu, update));
+                        sensorList.add(new Sensor(id, suhu, kelembaban, update));
                         index++;
-//                        lastChild--;
+                        lastChild--;
                     } catch (NullPointerException nullPointer) {
                         Log.d("Error: ", nullPointer.getMessage());
                     }
                 }
+
 
                 DatabaseReference settings = FirebaseDatabase.getInstance().getReference().child("settings");
                 settings.addValueEventListener(new ValueEventListener() {
@@ -183,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 }, 1500);
             }
         });
+        //
 
         // scrollview
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
