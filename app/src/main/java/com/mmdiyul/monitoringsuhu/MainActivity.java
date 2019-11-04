@@ -18,6 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textUpdate;
     private TextView textAlert;
     private LinearLayout layoutAlert;
+    private LineChart lineChart;
 
     private DatabaseReference databaseReference;
 
@@ -187,6 +196,8 @@ public class MainActivity extends AppCompatActivity {
         });
         //
 
+//        sensorList.add(new Sensor(id,kelembaban,suhu,update));
+
         // scrollview
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
@@ -208,11 +219,50 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(sensorAdapter);
+
+        //chart
+        lineChart = (LineChart)findViewById(R.id.chart);
+        LineDataSet lineDataSet = new LineDataSet(getData(), "Inducesmile");
+        lineDataSet.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        lineDataSet.setValueTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        final String[] months = new String[]{"Jan", "Feb", "Mar", "Apr"};
+        ValueFormatter formatter = new ValueFormatter() {
+            @Override
+            public String getAxisLabel(float value, AxisBase axis) {
+                return months[(int) value];
+            }
+        };
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(formatter);
+
+        YAxis yAxisRight = lineChart.getAxisRight();
+        yAxisRight.setEnabled(false);
+
+        YAxis yAxisLeft = lineChart.getAxisLeft();
+        yAxisLeft.setGranularity(1f);
+
+        LineData data = new LineData(lineDataSet);
+        lineChart.setData(data);
+        lineChart.animateX(2500);
+        lineChart.invalidate();
+
     }
+        private ArrayList getData(){
+            ArrayList<Entry> entries = new ArrayList<>();
+            entries.add(new Entry(0f, 4f));
+            entries.add(new Entry(1f, 1f));
+            entries.add(new Entry(2f, 2f));
+            entries.add(new Entry(3f, 4f));
+            return entries;
+        }
 
     public void handleSettings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
         finish();
     }
+
+
 }
