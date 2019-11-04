@@ -37,6 +37,7 @@ import com.mmdiyul.monitoringsuhu.model.Sensor;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -63,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Sensor> sensorList = new ArrayList<>();
     private SensorAdapter sensorAdapter;
+    private ArrayList<Entry> listSuhu = new ArrayList<>();
+    private ArrayList<Entry> listKelembaban = new ArrayList<>();
+    private ArrayList<LineDataSet> lines;
 
     int index = 0;
 
@@ -123,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
                         update = dataSnapshot.child(lastChild + "/updatedAt").getValue().toString();
 
                         sensorList.add(new Sensor(id, suhu, kelembaban, update));
+                        listSuhu.add(new Entry(Float.parseFloat(String.valueOf(index)), Float.parseFloat(String.valueOf(suhu))));
+                        listKelembaban.add(new Entry(Float.parseFloat(String.valueOf(index)), Float.parseFloat(String.valueOf(kelembaban))));
+
                         index++;
                         lastChild--;
                     } catch (NullPointerException nullPointer) {
@@ -130,6 +137,36 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+                lineChart = (LineChart)findViewById(R.id.chart);
+
+                LineDataSet lineDataSetSuhu = new LineDataSet(listSuhu, "Suhu");
+                LineDataSet lineDataSetKelembaban = new LineDataSet(listKelembaban, "Kelembaban");
+
+                lineDataSetSuhu.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+                lineDataSetKelembaban.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+
+                XAxis xAxis = lineChart.getXAxis();
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                final String[] x = new String[]{"1", "2", "3", "4", "5", "6", "8", "9", "10"};
+                ValueFormatter formatter = new ValueFormatter() {
+                    @Override
+                    public String getAxisLabel(float value, AxisBase axis) {
+                        return x[(int) value];
+                    }
+                };
+                xAxis.setGranularity(1f);
+                xAxis.setValueFormatter(formatter);
+
+                YAxis yAxisRight = lineChart.getAxisRight();
+                yAxisRight.setEnabled(false);
+
+                YAxis yAxisLeft = lineChart.getAxisLeft();
+                yAxisLeft.setGranularity(1f);
+
+                LineData data = new LineData(lineDataSetSuhu, lineDataSetKelembaban);
+                lineChart.setData(data);
+                lineChart.animateX(500);
+                lineChart.invalidate();
 
                 DatabaseReference settings = FirebaseDatabase.getInstance().getReference().child("settings");
                 settings.addValueEventListener(new ValueEventListener() {
@@ -219,44 +256,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(sensorAdapter);
-
-        //chart
-        lineChart = (LineChart)findViewById(R.id.chart);
-        LineDataSet lineDataSet = new LineDataSet(getData(), "Inducesmile");
-        lineDataSet.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        lineDataSet.setValueTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        final String[] months = new String[]{"Jan", "Feb", "Mar", "Apr"};
-        ValueFormatter formatter = new ValueFormatter() {
-            @Override
-            public String getAxisLabel(float value, AxisBase axis) {
-                return months[(int) value];
-            }
-        };
-        xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(formatter);
-
-        YAxis yAxisRight = lineChart.getAxisRight();
-        yAxisRight.setEnabled(false);
-
-        YAxis yAxisLeft = lineChart.getAxisLeft();
-        yAxisLeft.setGranularity(1f);
-
-        LineData data = new LineData(lineDataSet);
-        lineChart.setData(data);
-        lineChart.animateX(2500);
-        lineChart.invalidate();
-
     }
-        private ArrayList getData(){
-            ArrayList<Entry> entries = new ArrayList<>();
-            entries.add(new Entry(0f, 4f));
-            entries.add(new Entry(1f, 1f));
-            entries.add(new Entry(2f, 2f));
-            entries.add(new Entry(3f, 4f));
-            return entries;
-        }
 
     public void handleSettings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
