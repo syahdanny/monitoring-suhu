@@ -52,10 +52,10 @@ public class MainActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
 
-    private int id;
-    private double suhu;
-    private double kelembaban;
-    private String update;
+    private int id, tenId;
+    private double suhu, tenSuhu;
+    private double kelembaban, tenKelembaban;
+    private String update, tenUpdate;
     private double minSuhu, maxSuhu, minKelembaban, maxKelembaban;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 long lengthData = dataSnapshot.getChildrenCount();
                 long lastChild = lengthData - 1;
+                long tenLastChild = lengthData - 10;
                 try {
                     suhu = Double.parseDouble(dataSnapshot.child(lastChild + "/suhu").getValue().toString());
                     kelembaban = Double.parseDouble(dataSnapshot.child(lastChild + "/kelembaban").getValue().toString());
@@ -126,12 +127,18 @@ public class MainActivity extends AppCompatActivity {
                         kelembaban = Double.parseDouble(dataSnapshot.child(lastChild + "/kelembaban").getValue().toString());
                         update = dataSnapshot.child(lastChild + "/updatedAt").getValue().toString();
 
-                        sensorList.add(new Sensor(id, suhu, kelembaban, update));
-                        listSuhu.add(new Entry(Float.parseFloat(String.valueOf(index)), Float.parseFloat(String.valueOf(suhu))));
-                        listKelembaban.add(new Entry(Float.parseFloat(String.valueOf(index)), Float.parseFloat(String.valueOf(kelembaban))));
+                        tenId = Integer.parseInt(dataSnapshot.child(tenLastChild + "/id").getValue().toString());
+                        tenSuhu = Double.parseDouble(dataSnapshot.child(tenLastChild + "/suhu").getValue().toString());
+                        tenKelembaban = Double.parseDouble(dataSnapshot.child(tenLastChild + "/kelembaban").getValue().toString());
+                        tenUpdate = dataSnapshot.child(tenLastChild + "/updatedAt").getValue().toString();
+
+                        sensorList.add(new Sensor(tenId, tenSuhu, tenKelembaban, tenUpdate));
+                        listSuhu.add(new Entry(Float.parseFloat(String.valueOf(index)), Float.parseFloat(String.valueOf(tenSuhu))));
+                        listKelembaban.add(new Entry(Float.parseFloat(String.valueOf(index)), Float.parseFloat(String.valueOf(tenKelembaban))));
 
                         index++;
                         lastChild--;
+                        tenLastChild++;
                     } catch (NullPointerException nullPointer) {
                         Log.d("Error: ", nullPointer.getMessage());
                     }
