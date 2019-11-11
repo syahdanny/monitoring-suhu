@@ -37,7 +37,6 @@ import com.mmdiyul.monitoringsuhu.model.Sensor;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                         tenKelembaban = Double.parseDouble(dataSnapshot.child(tenLastChild + "/kelembaban").getValue().toString());
                         tenUpdate = dataSnapshot.child(tenLastChild + "/updatedAt").getValue().toString();
 
-                        sensorList.add(new Sensor(tenId, tenSuhu, tenKelembaban, tenUpdate));
+                        sensorList.add(new Sensor(id, suhu, kelembaban, update));
                         listSuhu.add(new Entry(Float.parseFloat(String.valueOf(index)), Float.parseFloat(String.valueOf(tenSuhu))));
                         listKelembaban.add(new Entry(Float.parseFloat(String.valueOf(index)), Float.parseFloat(String.valueOf(tenKelembaban))));
 
